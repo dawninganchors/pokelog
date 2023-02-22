@@ -1,0 +1,15 @@
+<%
+def autocomplete_data
+  YAML.load_file(Rails.root.join("data/species.yml")).map {
+    id, name, form = _1.values_at :id, :name, :form
+    name << " (#{form})" if form unless form == "Normal"
+    [name, "/images/sprites/#{id}.png"]
+  }.to_h
+end
+%>
+
+runOnLoad(() => {
+  M.Autocomplete.init(document.querySelectorAll(".autocomplete"), {
+    data: <%= JSON.pretty_generate autocomplete_data %>
+  })
+});
